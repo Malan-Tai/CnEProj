@@ -10,10 +10,13 @@
     <unique-id>2m2oqhlgof90t</unique-id>
     <saved-with-version>28000</saved-with-version>
     <used-plugins>
+        <plugin author="Scirra" id="Mouse" version="1">Mouse</plugin>
         <plugin author="Scirra" id="Sprite" version="1">Sprite</plugin>
         <plugin author="Scirra" id="TiledBg" version="1">Tiled Background</plugin>
     </used-plugins>
-    <used-behaviors />
+    <used-behaviors>
+        <behavior author="Scirra" id="Car" version="1">Car</behavior>
+    </used-behaviors>
     <used-effects />
     <configurations>
         <configuration exporter-descname="HTML5" exporter-id="html5" name="HTML5" />
@@ -41,9 +44,15 @@
     <object-folder>
         <object-type name="YellowBuggy_" sid="761699516195338">
             <plugin id="Sprite" />
+            <behaviors>
+                <behavior-type name="Car" sid="591513496145930">
+                    <behavior id="Car" />
+                </behavior-type>
+            </behaviors>
             <animation-folder>
                 <animation framecount="1" loop="0" name="Default" pingpong="0" repeatcount="1" repeatto="0" sid="415745566729317" speed="5">
                     <frame duration="1" hotspotX="0.5" hotspotY="0.5" original-source="C:\Users\malan\Downloads\YellowBuggy_3.png">
+                        <image-point name="template_spawn" x="0.5" y="0.109375" />
                         <collision-poly>
                             <point x="0.28125" y="0.28125" />
                             <point x="0.5" y="0.09375" />
@@ -62,6 +71,48 @@
             <plugin id="TiledBg" />
             <texture original-source="C:\Users\malan\Downloads\sand.jpg" />
         </object-type>
+        <object-type name="UiTemplate" sid="421114392545502">
+            <plugin id="Sprite" />
+            <animation-folder>
+                <animation framecount="1" loop="0" name="Default" pingpong="0" repeatcount="1" repeatto="0" sid="141604120778227" speed="5">
+                    <frame duration="1" hotspotX="0.52" hotspotY="1" original-source="C:\Users\malan\Downloads\op18xu_movtemplates.png">
+                        <collision-poly>
+                            <point x="1" y="0" />
+                            <point x="1" y="0.484" />
+                            <point x="1" y="1" />
+                            <point x="1" y="1" />
+                            <point x="0" y="1" />
+                            <point x="0" y="0.484" />
+                            <point x="0" y="0" />
+                            <point x="1" y="0" />
+                        </collision-poly>
+                    </frame>
+                </animation>
+            </animation-folder>
+        </object-type>
+        <object-type name="Mouse" sid="274206688302952">
+            <plugin id="Mouse" />
+        </object-type>
+        <object-type name="MapTemplate" sid="964432319086266">
+            <plugin id="Sprite" />
+            <animation-folder>
+                <animation framecount="1" loop="0" name="Default" pingpong="0" repeatcount="1" repeatto="0" sid="498004502889764" speed="5">
+                    <frame duration="1" hotspotX="0.52" hotspotY="1" original-source="C:\Users\malan\Downloads\op18xu_movtemplates.png">
+                        <image-point name="end" x="0.52" y="0" />
+                        <collision-poly>
+                            <point x="1" y="0" />
+                            <point x="1" y="0.484" />
+                            <point x="1" y="1" />
+                            <point x="1" y="1" />
+                            <point x="0" y="1" />
+                            <point x="0" y="0.484" />
+                            <point x="0" y="0" />
+                            <point x="1" y="0" />
+                        </collision-poly>
+                    </frame>
+                </animation>
+            </animation-folder>
+        </object-type>
     </object-folder>
     <families />
     <layout-folder>
@@ -70,7 +121,9 @@
     <event-folder>
         <event-sheet>Event sheet 1.xml</event-sheet>
     </event-folder>
-    <global-instances />
+    <global-instances>
+        <global-instance type="Mouse" uid="3" />
+    </global-instances>
     <sounds-folder />
     <music-folder />
     <files-folder>

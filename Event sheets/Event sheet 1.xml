@@ -2,5 +2,65 @@
 <c2eventsheet>
     <!--All the 'name' attributes are ignored by Construct 2 - they are there for readability only.-->
     <name>Event sheet 1</name>
-    <events />
+    <events>
+        <variable constant="0" name="Moved" sid="654496339224334" static="0" type="number">0</variable>
+        <event-block sid="254529730110060">
+            <conditions>
+                <condition id="7" name="Cursor is over object" sid="670676950236393" type="Mouse">
+                    <param id="0" name="Object">UiTemplate</param>
+                </condition>
+                <condition id="-14" name="Compare variable" sid="508354227458989" type="System">
+                    <param id="0" name="Variable">Moved</param>
+                    <param id="1" name="Comparison">0</param>
+                    <param id="2" name="Value">0</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="0" name="Spawn another object" sid="967391827280107" type="YellowBuggy_">
+                    <param id="0" name="Object">MapTemplate</param>
+                    <param id="1" name="Layer">0</param>
+                    <param id="2" name="Image point">&quot;template_spawn&quot;</param>
+                </action>
+                <action id="9" name="Set scale" sid="315301896275112" type="UiTemplate">
+                    <param id="0" name="Scale">1.2</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="113522771332963">
+            <conditions>
+                <condition id="7" inverted="1" name="Cursor is over object" sid="572383117853832" type="Mouse">
+                    <param id="0" name="Object">UiTemplate</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-9" name="Destroy" sid="878569242123206" type="MapTemplate" />
+                <action id="9" name="Set scale" sid="846054437853202" type="UiTemplate">
+                    <param id="0" name="Scale">1</param>
+                </action>
+            </actions>
+        </event-block>
+        <event-block sid="110092485007320">
+            <conditions>
+                <condition id="6" name="On object clicked" sid="273735501461333" type="Mouse">
+                    <param id="0" name="Mouse button">0</param>
+                    <param id="1" name="Click type">0</param>
+                    <param id="2" name="Object clicked">UiTemplate</param>
+                </condition>
+            </conditions>
+            <actions>
+                <action id="-3" name="Set position" sid="201488546246602" type="YellowBuggy_">
+                    <param id="0" name="X">MapTemplate.ImagePointX(&quot;end&quot;)</param>
+                    <param id="1" name="Y">MapTemplate.ImagePointY(&quot;end&quot;)</param>
+                </action>
+                <action id="-9" name="Destroy" sid="619073621554569" type="MapTemplate" />
+                <action id="-9" name="Set value" sid="291604814967165" type="System">
+                    <param id="0" name="Variable">Moved</param>
+                    <param id="1" name="Value">1</param>
+                </action>
+                <action id="9" name="Set scale" sid="982321490506936" type="UiTemplate">
+                    <param id="0" name="Scale">1</param>
+                </action>
+            </actions>
+        </event-block>
+    </events>
 </c2eventsheet>
