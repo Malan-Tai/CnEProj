@@ -8,8 +8,10 @@ namespace UI
     {
         private GameObject _actualButton;
 
-        private ManeuverAgent _vehicle;
+        private ManeuverTemplatesPanel _panel;
         private ManeuverTemplate _template;
+
+        private ManeuverAgent _vehicle;
 
         private void Awake()
         {
@@ -22,8 +24,9 @@ namespace UI
             _actualButton.GetComponent<Button>().onClick.RemoveAllListeners();
         }
 
-        public void Initialize(ManeuverTemplate template)
+        public void Initialize(ManeuverTemplatesPanel panel, ManeuverTemplate template)
         {
+            _panel = panel;
             _template = template;
         }
 
@@ -46,6 +49,8 @@ namespace UI
         {
             _template.MoveVehicle(_vehicle);
             _template.Hide();
+            _panel.Unlock();
+            _panel.Hide();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
