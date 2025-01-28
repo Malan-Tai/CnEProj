@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,22 +8,38 @@ namespace UI
     public class HandCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler,
         IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        private Canvas _canvas;
-        private RectTransform _canvasRectTransform;
+        public delegate void CardFocusHandler(GameObject card, bool focused);
+        public static event CardFocusHandler OnCardFocused;
+
+        
+        private Canvas _rootCanvas;
+        private Canvas _cardCanvas;
+        private RectTransform _rootCanvasRectTransform;
         private RectTransform _rectTransform;
         private Vector2 _startAnchoredPos;
 
-        private Canvas _tempCanvas;
+        private bool _ignoreInput = false;
         private bool _ignoreHover = false;
         private bool _isFollowingPointer = false;
+        private bool _isDragging = false;
         private Vector2 _followOffset;
 
         private void Start()
         {
-            _canvas = GetComponentInParent<Canvas>();
-            _canvasRectTransform = _canvas.transform as RectTransform;
+            OnCardFocused += OnOtherCardFocused;
+            ClickCatcher.OnClickCaught += OnClickCaught;
+
+            _cardCanvas = GetComponentInParent<Canvas>();
+            _rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+            _rootCanvasRectTransform = _rootCanvas.transform as RectTransform;
             _rectTransform = GetComponent<RectTransform>();
             _startAnchoredPos = _rectTransform.anchoredPosition;
+        }
+
+        private void OnDestroy()
+        {
+            OnCardFocused -= OnOtherCardFocused;
+            ClickCatcher.OnClickCaught -= OnClickCaught;
         }
 
         private void Update()
@@ -34,9 +51,26 @@ namespace UI
             }
         }
 
+        private void OnOtherCardFocused(GameObject card, bool focused)
+        {
+            if (card != gameObject)
+            {
+                _ignoreInput = focused;
+            }
+        }
+
+        private void OnClickCaught(PointerEventData eventData)
+        {
+            if (_isFollowingPointer)
+            {
+                _isFollowingPointer = false;
+                GoBackToHand();
+            }
+        }
+
         private Vector2 GetAnchoredMousePos()
         {
-            Vector2 canvasSizeDelta = _canvasRectTransform.sizeDelta;
+            Vector2 canvasSizeDelta = _rootCanvasRectTransform.sizeDelta;
             Vector2 factors = new Vector2(
                 canvasSizeDelta.x / Screen.width,
                 canvasSizeDelta.y / Screen.height
@@ -46,7 +80,7 @@ namespace UI
 
         private void ToggleHover(bool hovered)
         {
-            if (_ignoreHover) return;
+            if (_ignoreHover || _ignoreInput) return;
 
             float targetY = hovered ? _startAnchoredPos.y + 45.0f : _startAnchoredPos.y;
             _rectTransform.DOAnchorPosY(targetY, 0.3f);
@@ -54,16 +88,23 @@ namespace UI
 
         private void MoveToFront()
         {
-            // used to display in front of everything else without changing hierarchy
-            _tempCanvas = gameObject.AddComponent<Canvas>();
-            _tempCanvas.overrideSorting = true;
-            _tempCanvas.sortingOrder = 100;
+            _cardCanvas.overrideSorting = true;
+            _cardCanvas.sortingOrder = 100;
+            
+            OnCardFocused?.Invoke(gameObject, true);
         }
 
         private void GoBackToHand()
         {
-            Destroy(_tempCanvas);
-            _rectTransform.DOAnchorPos(_startAnchoredPos, 0.5f).OnComplete(() => _ignoreHover = false);
+            _cardCanvas.overrideSorting = false;
+            _cardCanvas.sortingOrder = 0;
+            _rectTransform.DOAnchorPos(_startAnchoredPos, 0.5f).OnComplete(() =>
+            {
+                _ignoreHover = false;
+                DOTween.Kill(_rectTransform);
+            });
+            
+            OnCardFocused?.Invoke(gameObject, false);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -78,6 +119,7 @@ namespace UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (_isDragging || _ignoreInput) return;
             if (_isFollowingPointer)
             {
                 _isFollowingPointer = false;
@@ -94,19 +136,27 @@ namespace UI
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (_isFollowingPointer || _ignoreInput) return;
+
             DOTween.Kill(_rectTransform);
             _ignoreHover = true;
+            _isDragging = true;
 
             MoveToFront();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
+            if (_isFollowingPointer || _ignoreInput) return;
+
+            _rectTransform.anchoredPosition += eventData.delta / _rootCanvas.scaleFactor;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (_isFollowingPointer || _ignoreInput) return;
+
+            _isDragging = false;
             GoBackToHand();
         }
     }
