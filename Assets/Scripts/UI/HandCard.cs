@@ -117,8 +117,8 @@ namespace UI
         public void DoSpawn()
         {
             Vector2 target = _startAnchoredPos;
-            _rectTransform.anchoredPosition = new Vector2(target.x, target.y + 45.0f);
-            _rectTransform.DOAnchorPos(target, 0.8f);
+            _rectTransform.anchoredPosition = new Vector2(target.x, target.y - 200.0f);
+            _rectTransform.DOAnchorPos(target, 0.8f).SetEase(Ease.OutCirc);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
