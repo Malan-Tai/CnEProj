@@ -14,16 +14,20 @@ namespace UI
 
         private void SetAnchoredPosition(RectTransform rect, Vector2 target, int axis)
         {
-            Vector2 current = rect.anchoredPosition;
-            if (Application.isPlaying && axis == 0)
+            var smoothElement = rect.GetComponent<SmoothLayoutElement>();
+            bool hasSpawned = !smoothElement || smoothElement.HasSpawned;
+            bool doAnim = hasSpawned && axis == 0 && Application.isPlaying;
+
+            Vector2 final = doAnim ? new Vector2(rect.anchoredPosition.x, target.y) : target;
+            rect.anchoredPosition = final;
+
+            if (!hasSpawned)
             {
-                Vector2 immediate = new Vector2(current.x, target.y);
-                rect.anchoredPosition = immediate;
-                rect.DOAnchorPosX(target.x, 0.5f);
+                smoothElement.Spawn();
             }
-            else
+            else if (doAnim)
             {
-                rect.anchoredPosition = target;
+                rect.DOAnchorPosX(target.x, 0.5f);
             }
         }
 

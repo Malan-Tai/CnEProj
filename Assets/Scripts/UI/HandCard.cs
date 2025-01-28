@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -16,6 +17,7 @@ namespace UI
         private Canvas _cardCanvas;
         private RectTransform _rootCanvasRectTransform;
         private RectTransform _rectTransform;
+        private LayoutElement _layoutElement;
         private Vector2 _startAnchoredPos;
 
         private bool _ignoreInput = false;
@@ -33,6 +35,7 @@ namespace UI
             _rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
             _rootCanvasRectTransform = _rootCanvas.transform as RectTransform;
             _rectTransform = GetComponent<RectTransform>();
+            _layoutElement = GetComponentInParent<LayoutElement>();
             _startAnchoredPos = _rectTransform.anchoredPosition;
         }
 
@@ -88,6 +91,8 @@ namespace UI
 
         private void MoveToFront()
         {
+            _layoutElement.ignoreLayout = true;
+
             _cardCanvas.overrideSorting = true;
             _cardCanvas.sortingOrder = 100;
             
@@ -96,6 +101,8 @@ namespace UI
 
         private void GoBackToHand()
         {
+            _layoutElement.ignoreLayout = false;
+
             _cardCanvas.overrideSorting = false;
             _cardCanvas.sortingOrder = 0;
             _rectTransform.DOAnchorPos(_startAnchoredPos, 0.5f).OnComplete(() =>
@@ -105,6 +112,13 @@ namespace UI
             });
             
             OnCardFocused?.Invoke(gameObject, false);
+        }
+
+        public void DoSpawn()
+        {
+            Vector2 target = _startAnchoredPos;
+            _rectTransform.anchoredPosition = new Vector2(target.x, target.y + 45.0f);
+            _rectTransform.DOAnchorPos(target, 0.8f);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
